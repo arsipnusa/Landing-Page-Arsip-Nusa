@@ -91,6 +91,21 @@
 
         body { background-color: #f1f5f9; background-attachment: fixed; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
+
+        /* --- SCROLL ANIMATION CSS --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal.delay-100 { transition-delay: 0.1s; }
+        .reveal.delay-200 { transition-delay: 0.2s; }
     </style>
 </head>
 <body class="text-dark antialiased selection:bg-black selection:text-white overflow-x-hidden">
@@ -102,41 +117,75 @@
         <div class="absolute top-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-purple-200/30 rounded-full mix-blend-multiply filter blur-[100px] animate-blob animation-delay-2000"></div>
     </div>
 
-    <nav class="fixed w-full z-40 top-0 pt-4 px-4 md:px-6 pointer-events-none">
-        <div class="max-w-6xl mx-auto glass-panel rounded-full px-4 md:px-6 py-3 flex justify-between items-center pointer-events-auto shadow-sm">
-            <a href="#" class="text-base md:text-lg font-extrabold tracking-tighter flex items-center gap-2">
-                <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-xs">
-                    <i class="ri-store-2-line"></i>
+    <nav class="fixed w-full z-50 top-0 pt-2 px-3 md:pt-4 md:px-6 pointer-events-none reveal active"> 
+        <div class="max-w-6xl mx-auto relative pointer-events-auto">
+            <div class="glass-panel rounded-full px-3 md:px-6 py-2.5 md:py-3 flex justify-between items-center shadow-sm relative z-50">
+                <a href="#" class="text-sm md:text-lg font-extrabold tracking-tighter flex items-center gap-2">
+                    <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-xs shrink-0">
+                        <i class="ri-store-2-line"></i>
+                    </div>
+                    <span class="truncate hidden sm:inline">Toko Arsip Nusa.</span>
+                    <span class="truncate sm:hidden">Arsip Nusa.</span>
+                </a>
+
+                <div class="hidden md:flex space-x-6 text-sm font-semibold text-grey">
+                    <a href="#keunggulan" class="hover:text-primary transition">Keunggulan</a>
+                    <a href="#cara-pesan" class="hover:text-primary transition">Langkah</a>
+                    <a href="#perbandingan" class="hover:text-primary transition">Perbandingan</a>
+                    <a href="#portfolio" class="hover:text-primary transition">Portfolio</a>
+                    <a href="#harga" class="hover:text-primary transition">Harga</a>
                 </div>
-                Toko Arsip Nusa.
-            </a>
-            <div class="hidden md:flex space-x-8 text-sm font-semibold text-grey">
-                <a href="#keunggulan" class="hover:text-primary transition">Keunggulan</a>
-                <a href="#portfolio" class="hover:text-primary transition">Portfolio</a>
-                <a href="#harga" class="hover:text-primary transition">Harga</a>
+
+                <div class="flex items-center gap-2">
+                    <a href="https://wa.me/6282154853554?text=Halo%20Toko%20Arsip%20Nusa,%20saya%20mau%20konsultasi%20tentang%20website%20UMKM." class="bg-primary text-white px-4 py-2 md:px-5 md:py-2.5 rounded-full text-[11px] md:text-sm font-bold hover:bg-gray-800 transition transform hover:scale-105 shadow-lg flex items-center gap-1.5 md:gap-2">
+                        <i class="ri-whatsapp-line text-sm md:text-lg"></i> 
+                        <span>WhatsApp</span>
+                    </a>
+                    
+                    <button id="mobile-menu-btn" class="md:hidden w-9 h-9 rounded-full bg-white/50 flex items-center justify-center text-dark border border-white hover:bg-white transition shrink-0">
+                        <i class="ri-menu-4-line text-lg" id="menu-icon"></i>
+                    </button>
+                </div>
             </div>
-            <a href="https://wa.me/6282154853554?text=Halo%20Toko%20Arsip%20Nusa,%20saya%20mau%20konsultasi%20tentang%20website%20UMKM." class="bg-primary text-white px-4 py-2 md:px-5 md:py-2.5 rounded-full text-xs md:text-sm font-bold hover:bg-gray-800 transition transform hover:scale-105 shadow-lg flex items-center gap-2">
-                <i class="ri-whatsapp-line"></i> Konsultasi
-            </a>
+
+            <div id="mobile-menu" class="hidden absolute top-full left-0 w-full pt-2 px-1 z-40 origin-top animate-pop-in">
+                <div class="glass-panel rounded-3xl p-4 flex flex-col gap-1 shadow-xl">
+                    <a href="#keunggulan" class="mobile-link block px-4 py-3 rounded-xl hover:bg-white/50 font-bold text-dark text-sm flex justify-between items-center">
+                        Keunggulan <i class="ri-arrow-right-s-line text-grey"></i>
+                    </a>
+                    <a href="#cara-pesan" class="mobile-link block px-4 py-3 rounded-xl hover:bg-white/50 font-bold text-dark text-sm flex justify-between items-center">
+                        Langkah Order <i class="ri-arrow-right-s-line text-grey"></i>
+                    </a>
+                     <a href="#perbandingan" class="mobile-link block px-4 py-3 rounded-xl hover:bg-white/50 font-bold text-dark text-sm flex justify-between items-center">
+                        Perbandingan <i class="ri-arrow-right-s-line text-grey"></i>
+                    </a>
+                    <a href="#portfolio" class="mobile-link block px-4 py-3 rounded-xl hover:bg-white/50 font-bold text-dark text-sm flex justify-between items-center">
+                        Portfolio <i class="ri-arrow-right-s-line text-grey"></i>
+                    </a>
+                    <a href="#harga" class="mobile-link block px-4 py-3 rounded-xl bg-gray-50 font-bold text-primary text-sm flex justify-between items-center border border-gray-100">
+                        Paket Harga <i class="ri-price-tag-3-fill text-primary"></i>
+                    </a>
+                </div>
+            </div>
         </div>
     </nav>
 
     <section class="pt-28 md:pt-40 pb-10 px-6 min-h-[85vh] md:min-h-[90vh] flex flex-col justify-center relative">
         <div class="max-w-6xl mx-auto grid lg:grid-cols-12 gap-12 items-center flex-grow">
             <div class="lg:col-span-7 space-y-6 md:space-y-8 text-center lg:text-left z-10">
-                <div class="inline-flex items-center gap-2 glass-panel px-4 py-1.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-wider text-grey mx-auto lg:mx-0 border border-white/50">
+                <div class="reveal inline-flex items-center gap-2 glass-panel px-4 py-1.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-wider text-grey mx-auto lg:mx-0 border border-white/50">
                     <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
                     Digital Partner UMKM
                 </div>
-                <h1 class="text-4xl md:text-7xl font-bold leading-[1.1] tracking-tight text-dark">
+                <h1 class="reveal text-4xl md:text-7xl font-bold leading-[1.1] tracking-tight text-dark">
                     Bikin Usahamu <br>
                     <span class="bg-clip-text text-transparent bg-gradient-to-r from-gray-600 via-black to-gray-600">Terlihat Mahal</span> <br>
                     Modal Minimal.
                 </h1>
-                <p class="text-base md:text-lg text-grey leading-relaxed max-w-lg mx-auto lg:mx-0">
+                <p class="reveal text-base md:text-lg text-grey leading-relaxed max-w-lg mx-auto lg:mx-0">
                     Jasa pembuatan landing page khusus UMKM Indonesia. Tampilan profesional, orderan makin lancar. Gak perlu jago IT, kami yang urus semuanya sampai online!
                 </p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
+                <div class="reveal flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
                     <a href="#harga" class="bg-primary text-white px-8 py-4 rounded-2xl font-bold text-base md:text-lg hover:bg-gray-800 transition shadow-xl hover:shadow-2xl transform hover:-translate-y-1 flex items-center justify-center gap-2 group">
                         Buat Website Sekarang <i class="ri-arrow-right-line group-hover:translate-x-1 transition"></i>
                     </a>
@@ -147,7 +196,7 @@
             </div>
             
             <div class="lg:col-span-5 relative hidden lg:block h-[500px] perspective-1000">
-                <div id="hero-tilt" class="tilt-card w-full h-full relative z-10">
+                <div id="hero-tilt" class="tilt-card w-full h-full relative z-10 reveal">
                     <div class="spotlight-card p-3 rounded-[2.5rem] h-full w-full">
                         <div class="card-content bg-gray-50 rounded-[2rem] overflow-hidden h-full relative border border-white">
                             <img src="https://images.pexels.com/photos/11541178/pexels-photo-11541178.jpeg?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover opacity-90" alt="UMKM Digital">
@@ -173,13 +222,13 @@
 
     <section id="keunggulan" class="py-20 px-6">
         <div class="max-w-6xl mx-auto">
-            <div class="text-center mb-16 max-w-2xl mx-auto">
+            <div class="text-center mb-16 max-w-2xl mx-auto reveal">
                 <span class="text-sm font-bold text-primary uppercase tracking-widest border-b-2 border-primary pb-1">Kenapa Kami?</span>
                 <h2 class="text-3xl md:text-4xl font-bold mt-6 mb-4 text-dark">Solusi Tepat, <br>Tanpa Bikin Dompet Sekarat.</h2>
                 <p class="text-grey">Kami paham kebutuhan UMKM. Anda butuh website yang bagus, cepat jadi, dan harganya masuk akal.</p>
             </div>
             <div class="grid md:grid-cols-3 gap-6 md:gap-8">
-                <div class="spotlight-card p-8 rounded-[2rem] group">
+                <div class="spotlight-card reveal-card p-8 rounded-[2rem] group">
                     <div class="card-content">
                         <div class="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center text-3xl mb-6 text-black group-hover:scale-110 transition">
                             <i class="ri-rocket-2-fill"></i>
@@ -188,7 +237,7 @@
                         <p class="text-grey text-sm leading-relaxed">Gak perlu pusing mikirin desain atau kata-kata promosi. Kami yang buatkan copywriting persuasif khusus untuk bisnismu.</p>
                     </div>
                 </div>
-                <div class="spotlight-card p-8 rounded-[2rem] group bg-white/40">
+                <div class="spotlight-card reveal-card p-8 rounded-[2rem] group bg-white/40">
                     <div class="card-content">
                         <div class="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center text-3xl mb-6 text-black group-hover:scale-110 transition">
                             <i class="ri-smartphone-line"></i>
@@ -197,7 +246,7 @@
                         <p class="text-grey text-sm leading-relaxed">90% orang buka web dari HP. Kami pastikan website kamu tampil rapi, cepat, dan cantik di layar smartphone.</p>
                     </div>
                 </div>
-                <div class="spotlight-card p-8 rounded-[2rem] group">
+                <div class="spotlight-card reveal-card p-8 rounded-[2rem] group">
                     <div class="card-content">
                         <div class="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center text-3xl mb-6 text-black group-hover:scale-110 transition">
                             <i class="ri-whatsapp-line"></i>
@@ -212,7 +261,7 @@
 
     <section id="portfolio" class="py-20 px-6">
         <div class="max-w-6xl mx-auto">
-            <div class="mb-12 flex flex-col md:flex-row justify-between items-end gap-4 text-center md:text-left">
+            <div class="mb-12 flex flex-col md:flex-row justify-between items-end gap-4 text-center md:text-left reveal">
                 <div class="max-w-xl mx-auto md:mx-0">
                     <h2 class="text-3xl md:text-4xl font-bold mb-4 text-dark">Cocok Untuk Siapa?</h2>
                     <p class="text-grey">Apapun usahamu, kami buatkan wadah digital yang pas untuk meningkatkan branding.</p>
@@ -221,7 +270,7 @@
             
             <div class="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-4 h-auto md:h-[600px]">
                 
-                <div class="md:col-span-2 md:row-span-2 spotlight-card rounded-[2rem] group cursor-pointer min-h-[300px]">
+                <div class="reveal-card md:col-span-2 md:row-span-2 spotlight-card rounded-[2rem] group cursor-pointer min-h-[300px]">
                     <div class="card-content h-full w-full relative">
                         <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-110">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent p-8 flex flex-col justify-end">
@@ -234,7 +283,7 @@
                     </div>
                 </div>
 
-                <div class="md:col-span-1 md:row-span-2 spotlight-card rounded-[2rem] group cursor-pointer min-h-[300px]">
+                <div class="reveal-card md:col-span-1 md:row-span-2 spotlight-card rounded-[2rem] group cursor-pointer min-h-[300px]">
                     <div class="card-content h-full w-full relative">
                         <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-110">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent p-6 flex flex-col justify-end">
@@ -244,7 +293,7 @@
                     </div>
                 </div>
 
-                <div class="md:col-span-1 spotlight-card rounded-[2rem] group cursor-pointer min-h-[200px]">
+                <div class="reveal-card md:col-span-1 spotlight-card rounded-[2rem] group cursor-pointer min-h-[200px]">
                     <div class="card-content h-full w-full relative">
                         <img src="https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-110">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent p-6 flex flex-col justify-end">
@@ -254,7 +303,7 @@
                     </div>
                 </div>
 
-                <div class="md:col-span-1 spotlight-card rounded-[2rem] group cursor-pointer min-h-[200px]">
+                <div class="reveal-card md:col-span-1 spotlight-card rounded-[2rem] group cursor-pointer min-h-[200px]">
                     <div class="card-content h-full w-full relative">
                          <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="absolute inset-0 w-full h-full object-cover transition duration-700 group-hover:scale-110">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent p-6 flex flex-col justify-end">
@@ -268,14 +317,14 @@
         </div>
     </section>
 
-<section class="py-20 px-4 md:px-6">
+<section id="perbandingan" class="py-20 px-4 md:px-6">
     <div class="max-w-5xl mx-auto">
-        <div class="text-center mb-12">
+        <div class="text-center mb-12 reveal">
             <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">Jangan Salah Pilih Partner</h2>
             <p class="text-grey">Bandingkan value yang Anda dapatkan di sini.</p>
         </div>
 
-        <div class="relative">
+        <div class="relative reveal">
             <div class="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-b from-green-50/50 to-blue-50/50 rounded-3xl -z-10 hidden md:block border border-green-100"></div>
 
             <div class="grid grid-cols-12 gap-2 md:gap-4 items-end mb-6 px-2 md:px-6">
@@ -386,7 +435,7 @@
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[500px] bg-gradient-to-r from-blue-100/20 via-purple-100/20 to-green-100/20 blur-3xl rounded-full -z-10"></div>
 
     <div class="max-w-7xl mx-auto relative z-10">
-        <div class="text-center mb-20">
+        <div class="text-center mb-20 reveal">
             <span class="inline-block py-1 px-3 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-xs font-bold tracking-widest uppercase mb-4">Proses Kilat</span>
             <h2 class="text-3xl md:text-5xl font-extrabold text-dark mb-4">
                 4 Langkah <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Level Up</span> Bisnis
@@ -402,7 +451,7 @@
             </div>
             <div class="md:hidden absolute top-0 left-1/2 w-2 h-full bg-gradient-to-b from-blue-500/20 via-purple-500/20 to-green-500/20 rounded-full -translate-x-1/2 -z-10"></div>
 
-            <div class="group relative">
+            <div class="group relative reveal-card">
                 <div class="bg-white/40 backdrop-blur-xl border border-white/60 p-8 rounded-[2.5rem] shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 relative overflow-hidden h-full">
                     <span class="absolute -bottom-4 -right-4 text-[8rem] font-black text-dark/5 leading-none select-none group-hover:text-blue-500/10 transition-colors">1</span>
                     
@@ -420,7 +469,7 @@
                 </div>
             </div>
 
-            <div class="group relative md:mt-12"> <div class="bg-white/40 backdrop-blur-xl border border-white/60 p-8 rounded-[2.5rem] shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 relative overflow-hidden h-full">
+            <div class="group relative md:mt-12 reveal-card"> <div class="bg-white/40 backdrop-blur-xl border border-white/60 p-8 rounded-[2.5rem] shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 relative overflow-hidden h-full">
                     <span class="absolute -bottom-4 -right-4 text-[8rem] font-black text-dark/5 leading-none select-none group-hover:text-purple-500/10 transition-colors">2</span>
                     
                     <div class="w-16 h-16 bg-gradient-to-br from-purple-100 to-white border border-white rounded-2xl flex items-center justify-center text-3xl text-purple-600 shadow-lg mb-6 group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300">
@@ -437,7 +486,7 @@
                 </div>
             </div>
 
-            <div class="group relative">
+            <div class="group relative reveal-card">
                 <div class="bg-white/40 backdrop-blur-xl border border-white/60 p-8 rounded-[2.5rem] shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 relative overflow-hidden h-full">
                     <span class="absolute -bottom-4 -right-4 text-[8rem] font-black text-dark/5 leading-none select-none group-hover:text-orange-500/10 transition-colors">3</span>
                     
@@ -455,7 +504,7 @@
                 </div>
             </div>
 
-            <div class="group relative md:mt-12">
+            <div class="group relative md:mt-12 reveal-card">
                 <div class="bg-gradient-to-br from-green-50 to-white backdrop-blur-xl border-2 border-green-400/30 p-8 rounded-[2.5rem] shadow-xl hover:shadow-green-200/50 transition-all duration-500 hover:-translate-y-3 relative overflow-hidden h-full ring-4 ring-green-100/50">
                     <span class="absolute -bottom-4 -right-4 text-[8rem] font-black text-green-500/10 leading-none select-none">4</span>
                     
@@ -488,7 +537,7 @@
 
     <section id="harga" class="py-20 px-6">
         <div class="max-w-4xl mx-auto">
-            <div class="spotlight-card p-8 md:p-12 rounded-[3rem] text-center border-2 border-white/50 relative overflow-hidden">
+            <div class="spotlight-card reveal p-8 md:p-12 rounded-[3rem] text-center border-2 border-white/50 relative overflow-hidden">
                 <div class="card-content">
                     <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-gray-100 via-white to-transparent -z-10"></div>
                     <span class="bg-primary text-white px-4 py-1.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest mb-8 inline-block shadow-lg">Promo Spesial 2026</span>
@@ -515,14 +564,14 @@
     </section>
 
 <section class="py-20 px-6 max-w-4xl mx-auto">
-        <div class="text-center mb-12">
+        <div class="text-center mb-12 reveal">
             <h2 class="text-3xl md:text-4xl font-bold text-dark mb-4">Pertanyaan Sering Ditanyakan</h2>
             <p class="text-grey">Kami rangkum semua hal yang perlu Anda ketahui.</p>
         </div>
 
         <div class="space-y-4">
             
-            <details class="spotlight-card p-5 rounded-2xl group cursor-pointer open:bg-white transition duration-300">
+            <details class="spotlight-card reveal-card p-5 rounded-2xl group cursor-pointer open:bg-white transition duration-300">
                 <summary class="flex justify-between items-center font-bold text-lg list-none text-dark select-none card-content">
                     Saya gaptek, apa bisa dibantu sampai online?
                     <span class="transition transform group-open:rotate-180 text-grey"><i class="ri-arrow-down-s-line"></i></span>
@@ -532,7 +581,7 @@
                 </div>
             </details>
 
-            <details class="spotlight-card p-5 rounded-2xl group cursor-pointer open:bg-white transition duration-300">
+            <details class="spotlight-card reveal-card p-5 rounded-2xl group cursor-pointer open:bg-white transition duration-300">
                 <summary class="flex justify-between items-center font-bold text-lg list-none text-dark select-none card-content">
                     Apakah ada biaya bulanan/tahunan?
                     <span class="transition transform group-open:rotate-180 text-grey"><i class="ri-arrow-down-s-line"></i></span>
@@ -542,7 +591,7 @@
                 </div>
             </details>
 
-            <details class="spotlight-card p-5 rounded-2xl group cursor-pointer open:bg-white transition duration-300">
+            <details class="spotlight-card reveal-card p-5 rounded-2xl group cursor-pointer open:bg-white transition duration-300">
                 <summary class="flex justify-between items-center font-bold text-lg list-none text-dark select-none card-content">
                     Bisa pakai nama domain sendiri (.com)?
                     <span class="transition transform group-open:rotate-180 text-grey"><i class="ri-arrow-down-s-line"></i></span>
@@ -552,7 +601,7 @@
                 </div>
             </details>
 
-            <details class="spotlight-card p-5 rounded-2xl group cursor-pointer open:bg-white transition duration-300">
+            <details class="spotlight-card reveal-card p-5 rounded-2xl group cursor-pointer open:bg-white transition duration-300">
                 <summary class="flex justify-between items-center font-bold text-lg list-none text-dark select-none card-content">
                     Saya belum punya foto produk yang bagus, gimana?
                     <span class="transition transform group-open:rotate-180 text-grey"><i class="ri-arrow-down-s-line"></i></span>
@@ -562,7 +611,7 @@
                 </div>
             </details>
 
-            <details class="spotlight-card p-5 rounded-2xl group cursor-pointer open:bg-white transition duration-300">
+            <details class="spotlight-card reveal-card p-5 rounded-2xl group cursor-pointer open:bg-white transition duration-300">
                 <summary class="flex justify-between items-center font-bold text-lg list-none text-dark select-none card-content">
                     Berapa lama proses pengerjaannya?
                     <span class="transition transform group-open:rotate-180 text-grey"><i class="ri-arrow-down-s-line"></i></span>
@@ -572,7 +621,7 @@
                 </div>
             </details>
 
-            <details class="spotlight-card p-5 rounded-2xl group cursor-pointer open:bg-white transition duration-300">
+            <details class="spotlight-card reveal-card p-5 rounded-2xl group cursor-pointer open:bg-white transition duration-300">
                 <summary class="flex justify-between items-center font-bold text-lg list-none text-dark select-none card-content">
                     Kalau hasilnya kurang cocok, bisa revisi?
                     <span class="transition transform group-open:rotate-180 text-grey"><i class="ri-arrow-down-s-line"></i></span>
@@ -582,7 +631,7 @@
                 </div>
             </details>
 
-            <details class="spotlight-card p-5 rounded-2xl group cursor-pointer open:bg-white transition duration-300">
+            <details class="spotlight-card reveal-card p-5 rounded-2xl group cursor-pointer open:bg-white transition duration-300">
                 <summary class="flex justify-between items-center font-bold text-lg list-none text-dark select-none card-content">
                     Apakah website saya nanti muncul di Google?
                     <span class="transition transform group-open:rotate-180 text-grey"><i class="ri-arrow-down-s-line"></i></span>
@@ -592,7 +641,7 @@
                 </div>
             </details>
 
-            <details class="spotlight-card p-5 rounded-2xl group cursor-pointer open:bg-white transition duration-300">
+            <details class="spotlight-card reveal-card p-5 rounded-2xl group cursor-pointer open:bg-white transition duration-300">
                 <summary class="flex justify-between items-center font-bold text-lg list-none text-dark select-none card-content">
                     Kalau besok-besok mau ganti harga/menu gimana?
                     <span class="transition transform group-open:rotate-180 text-grey"><i class="ri-arrow-down-s-line"></i></span>
@@ -602,7 +651,7 @@
                 </div>
             </details>
 
-            <details class="spotlight-card p-5 rounded-2xl group cursor-pointer open:bg-white transition duration-300">
+            <details class="spotlight-card reveal-card p-5 rounded-2xl group cursor-pointer open:bg-white transition duration-300">
                 <summary class="flex justify-between items-center font-bold text-lg list-none text-dark select-none card-content">
                     Sistem pembayarannya bagaimana?
                     <span class="transition transform group-open:rotate-180 text-grey"><i class="ri-arrow-down-s-line"></i></span>
@@ -615,7 +664,7 @@
         </div>
     </section>
 
-    <footer class="mt-20 pt-16 pb-8 px-6 bg-white border-t border-gray-200">
+    <footer class="mt-20 pt-16 pb-8 px-6 bg-white border-t border-gray-200 reveal">
         <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
             <div class="md:col-span-2">
                 <a href="#" class="text-2xl font-extrabold tracking-tighter flex items-center gap-2 mb-4 text-dark">
@@ -696,9 +745,75 @@
     </div>
 
     <script>
-        // Script clock & weather dihapus
+        // 1. SCROLL REVEAL ANIMATION SCRIPT
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px 0px -50px 0px',
+                threshold: 0.1
+            };
 
-        // 3. Spotlight Hover Effect Logic (Disabled on mobile)
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            const revealElements = document.querySelectorAll('.reveal');
+            revealElements.forEach(el => observer.observe(el));
+
+            const cards = document.querySelectorAll('.reveal-card');
+            cards.forEach((card, index) => {
+                card.classList.add('reveal');
+                const delayIndex = index % 3; 
+                if(delayIndex === 1) card.classList.add('delay-100');
+                if(delayIndex === 2) card.classList.add('delay-200');
+                observer.observe(card);
+            });
+
+            // UPDATE: MOBILE MENU LOGIC
+            const btn = document.getElementById('mobile-menu-btn');
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('menu-icon');
+            const mobileLinks = document.querySelectorAll('.mobile-link');
+
+            btn.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
+                
+                // Toggle Icon
+                if (menu.classList.contains('hidden')) {
+                    icon.classList.remove('ri-close-line');
+                    icon.classList.add('ri-menu-4-line');
+                } else {
+                    icon.classList.remove('ri-menu-4-line');
+                    icon.classList.add('ri-close-line');
+                }
+            });
+
+            // Close menu when a link is clicked
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    menu.classList.add('hidden');
+                    icon.classList.remove('ri-close-line');
+                    icon.classList.add('ri-menu-4-line');
+                });
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!menu.contains(e.target) && !btn.contains(e.target) && !menu.classList.contains('hidden')) {
+                    menu.classList.add('hidden');
+                    icon.classList.remove('ri-close-line');
+                    icon.classList.add('ri-menu-4-line');
+                }
+            });
+        });
+
+
+        // 2. Spotlight Hover Effect Logic (Disabled on mobile)
         if (window.matchMedia("(min-width: 768px)").matches) {
             const cards = document.querySelectorAll('.spotlight-card');
             document.body.addEventListener('mousemove', (e) => {
@@ -711,7 +826,7 @@
                 });
             });
 
-            // 4. 3D Tilt Effect for Hero (Desktop Only)
+            // 3. 3D Tilt Effect for Hero (Desktop Only)
             const heroTilt = document.getElementById('hero-tilt');
             if(heroTilt) {
                 document.body.addEventListener('mousemove', (e) => {
@@ -726,7 +841,7 @@
             }
         }
 
-        // 5. Modal
+        // 4. Modal
         function openModal(modalId) {
             document.getElementById(modalId).classList.remove('hidden');
             document.body.style.overflow = 'hidden';
