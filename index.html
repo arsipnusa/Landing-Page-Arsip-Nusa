@@ -3,14 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Arsip Nusa | Digital Ecosystem</title>
+    <title>Arsip Nusa Dashboard</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -18,7 +16,11 @@
                 extend: {
                     fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
                     colors: {
-                        bgMain: '#f1f5f9',      
+                        brand: {
+                            primary: '#f3f1e4',    // Warm Beige (Background)
+                            secondary: '#eff1f6',  // Cool Grey (Cards/Island)
+                            text: '#131b2d',       // Dark Blue/Black (Text)
+                        },
                         slate: {
                             50: '#f8fafc',
                             100: '#f1f5f9',
@@ -28,8 +30,7 @@
                             500: '#64748b',
                             800: '#1e293b', 
                             900: '#0f172a',
-                        },
-                        accent: '#3b82f6',
+                        }
                     }
                 }
             }
@@ -39,313 +40,322 @@
     <style>
         body { 
             -webkit-tap-highlight-color: transparent;
-            background-color: #f1f5f9;
-            color: #1e293b;
+            background-color: #f3f1e4; 
+            color: #131b2d;
             overflow-x: hidden;
             visibility: hidden; 
         }
         
-        ::-webkit-scrollbar { width: 0px; background: transparent; }
-        
         .glass-card {
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(239, 241, 246, 0.65); 
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 4px 6px -1px rgba(71, 85, 105, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 20px -1px rgba(19, 27, 45, 0.05);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         
         .glass-card:hover {
-            background: rgba(255, 255, 255, 0.95);
-            border-color: #fff;
+            background: rgba(239, 241, 246, 0.85);
             transform: translateY(-4px);
-            box-shadow: 0 15px 35px -5px rgba(71, 85, 105, 0.1);
+            box-shadow: 0 15px 30px -5px rgba(19, 27, 45, 0.1);
         }
 
-        .gsap-reveal { opacity: 0; transform: translateY(20px); visibility: hidden; }
-        .page-section { display: none; opacity: 0; }
-        .page-section.active-page { display: block; opacity: 1; }
+        .gsap-reveal { opacity: 0; transform: translateY(20px); }
 
-        /* Style for active category */
-        .cat-btn.active {
-            background-color: #1e293b;
-            color: white;
-            border-color: #1e293b;
+        .btn-link {
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
         }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .btn-link:hover {
+            color: #2563eb; 
+            transform: translateX(4px); 
+        }
+
+        .text-gradient-header {
+            background: linear-gradient(135deg, #131b2d 0%, #64748b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            padding-bottom: 0.1em;
+        }
+
+        /* --- DYNAMIC ISLAND --- */
+        .dynamic-island {
+            background: rgba(239, 241, 246, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 32px 0 rgba(19, 27, 45, 0.08);
+            transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .logo-group {
+            max-width: 280px; 
+            opacity: 1;
+            transition: max-width 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+            overflow: hidden; 
+            white-space: nowrap;
+        }
+
+        .island-search-input {
+            width: 0;
+            opacity: 0;
+            padding: 0;
+            transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+            color: #131b2d;
+        }
+        .island-search-input::placeholder { color: #64748b; }
+
+        .is-searching .logo-group {
+            max-width: 0px; 
+            opacity: 0;
+            margin-right: 0; 
+        }
+
+        .is-searching .island-search-input {
+            width: 100%;
+            opacity: 1;
+            padding-left: 1rem;
+            padding-right: 0.5rem;
+        }
+
+        .icon-btn {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            color: #64748b;
+        }
+        .icon-btn:hover { color: #131b2d; }
+
+        .is-searching #searchTrigger {
+            opacity: 0;
+            pointer-events: none;
+            position: absolute; 
+            transform: scale(0.5);
+        }
+
+        #closeTrigger {
+            opacity: 0;
+            pointer-events: none;
+            position: absolute;
+            transform: scale(0.5) rotate(-90deg);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            color: #ef4444; 
+        }
+
+        .is-searching #closeTrigger {
+            opacity: 1;
+            pointer-events: auto;
+            position: relative;
+            transform: scale(1) rotate(0deg);
+        }
+
+        #searchDropdown {
+            transform-origin: top center;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transform: scale(0.95) translateY(-10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        #searchDropdown.show {
+            max-height: 400px;
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            margin-top: 10px;
+        }
+        
+        .social-btn {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(4px);
+        }
+        .social-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            color: #131b2d;
+            background-color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-color: #131b2d;
+        }
     </style>
 </head>
-<body class="antialiased selection:bg-slate-300 selection:text-slate-900">
+<body class="antialiased font-sans text-brand-text flex flex-col min-h-screen">
 
     <div class="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
-        <div class="absolute top-[-10%] right-[-5%] w-[40vw] h-[40vw] bg-blue-100/50 rounded-full blur-[100px]"></div>
-        <div class="absolute bottom-[-10%] left-[-5%] w-[40vw] h-[40vw] bg-indigo-100/40 rounded-full blur-[100px]"></div>
+        <div class="absolute top-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-[#eff1f6] rounded-full blur-[80px] opacity-60"></div>
+        <div class="absolute bottom-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-white rounded-full blur-[80px] opacity-50"></div>
     </div>
 
-    <nav class="fixed top-0 left-0 w-full z-50 px-6 py-4 flex justify-between items-center bg-[#f1f5f9]/80 backdrop-blur-md border-b border-slate-200/60 transition-transform duration-300" id="main-header">
-        <div class="flex items-center gap-2.5 cursor-pointer group" onclick="navTo('home')">
-            <div class="w-9 h-9 bg-slate-800 text-white rounded-xl flex items-center justify-center text-lg shadow-md group-hover:scale-105 transition">
-                <i class="ri-archive-fill"></i>
+    <nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] md:w-auto md:min-w-[420px] max-w-2xl">
+        <div id="islandContainer" class="dynamic-island rounded-full h-14 px-1.5 flex items-center justify-between relative z-50 overflow-hidden">
+            <div class="logo-group flex items-center gap-3 pl-2 shrink-0">
+                <img src="https://lh3.googleusercontent.com/a/ACg8ocIeXh7ZQaYLrPf_Zjvd1uv6whkmq8F8i2usldLPYBmxQGZ1JEc=s360-c-no" alt="Logo" class="w-9 h-9 rounded-full shadow-sm border border-white shrink-0 object-cover">
+                <span class="font-bold tracking-tight text-xs md:text-sm text-brand-text uppercase whitespace-nowrap">Arsip Nusa Dashboard</span>
             </div>
-            <span class="font-bold tracking-tight text-sm text-slate-800 uppercase">Arsip Nusa</span>
-        </div>
-
-        <div class="relative group">
-            <div class="flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-slate-200 w-40 focus-within:w-60 transition-all duration-300">
-                <i class="ri-search-line text-slate-400 text-sm"></i>
-                <input type="text" placeholder="Cari..." class="bg-transparent border-none outline-none text-xs ml-2 w-full text-slate-800 placeholder-slate-400">
+            <div class="search-group relative h-full ml-1 flex-grow flex justify-end items-center">
+                <input type="text" id="searchInput" placeholder="Cari layanan..." class="island-search-input bg-transparent border-none outline-none text-sm h-full" autocomplete="off">
+                <button id="searchTrigger" onclick="openSearch()" class="icon-btn w-10 h-10 bg-white/50 rounded-full flex items-center justify-center shadow-sm shrink-0 z-20 hover:bg-white"><i class="ri-search-2-line text-lg"></i></button>
+                <button id="closeTrigger" onclick="closeSearch()" class="icon-btn w-10 h-10 bg-white/80 rounded-full flex items-center justify-center shrink-0 z-20 hover:bg-white"><i class="ri-close-line text-xl"></i></button>
             </div>
         </div>
+        <div id="searchDropdown" class="w-full rounded-3xl shadow-xl border border-white/50 p-2 text-brand-text"></div>
     </nav>
 
-    <main class="w-full min-h-screen pt-28 pb-32 px-4 md:px-8 max-w-5xl mx-auto relative">
-        
-        <section id="page-home" class="page-section">
-            <div class="mb-14 hero-content">
-                <span class="gsap-reveal inline-block px-3 py-1 rounded-full bg-white border border-slate-200 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4 shadow-sm">
-                    Ecosystem v2.0
-                </span>
-                <h1 class="gsap-reveal text-4xl md:text-6xl font-extrabold tracking-tight text-slate-800 mb-4 leading-tight">
-                    Clean Digital <br><span class="text-slate-400">Environment.</span>
-                </h1>
-                <p class="gsap-reveal text-slate-500 text-base md:text-lg max-w-lg leading-relaxed">
-                    Akses seluruh layanan digital dan wawasan teknologi dalam antarmuka yang bersih.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 grid-content">
-                <div onclick="navTo('toko')" class="gsap-reveal glass-card p-8 rounded-[2rem] relative overflow-hidden group cursor-pointer h-[320px] flex flex-col justify-between">
-                    <div class="relative z-10">
-                        <div class="w-12 h-12 rounded-2xl bg-slate-800 text-white flex items-center justify-center text-2xl mb-4 shadow-lg shadow-slate-800/10">
-                            <i class="ri-store-2-fill"></i>
-                        </div>
-                        <h2 class="text-2xl font-bold text-slate-800 mb-2">Toko Arsip Nusa</h2>
-                        <p class="text-sm text-slate-500 max-w-sm leading-relaxed">Template website premium dan jasa landing page UMKM.</p>
-                    </div>
-                    <div class="relative z-10 flex items-center gap-2 text-xs font-bold text-slate-800 uppercase tracking-wider group-hover:gap-4 transition-all">
-                        Buka Katalog <i class="ri-arrow-right-line"></i>
-                    </div>
-                </div>
-
-                <div onclick="navTo('wawasan')" class="gsap-reveal glass-card p-6 rounded-[2rem] cursor-pointer group flex flex-col justify-between h-[320px]">
-                    <div>
-                        <div class="flex justify-between items-start mb-6">
-                            <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center text-lg">
-                                <i class="ri-article-line"></i>
-                            </div>
-                            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                        </div>
-                        <h3 class="text-xl font-bold text-slate-800 mb-2">Jurnal Wawasan</h3>
-                        <p class="text-xs text-slate-500 leading-relaxed">Artikel, tips coding, dan tren desain terbaru.</p>
-                    </div>
-                    <div class="w-full h-1 bg-slate-200 rounded-full overflow-hidden">
-                        <div class="w-1/3 h-full bg-slate-400 group-hover:w-full transition-all duration-700"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="page-wawasan" class="page-section">
-            <header class="mb-6 flex items-center gap-3 hero-content">
-                <button onclick="handleWawasanBack()" class="gsap-reveal w-9 h-9 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-100 transition">
-                    <i class="ri-arrow-left-line"></i>
-                </button>
-                <h2 id="wawasan-title-header" class="gsap-reveal text-2xl font-bold text-slate-800">Jurnal Wawasan</h2>
-            </header>
-
-            <div id="filter-container" class="gsap-reveal flex gap-2 overflow-x-auto pb-6 no-scrollbar -mx-4 px-4 mb-2">
-                <button onclick="filterArticles('Semua')" class="cat-btn active shrink-0 px-5 py-2 rounded-full border border-slate-200 bg-white text-[10px] font-bold text-slate-500 transition-all">Semua</button>
-                <button onclick="filterArticles('Berita')" class="cat-btn shrink-0 px-5 py-2 rounded-full border border-slate-200 bg-white text-[10px] font-bold text-slate-500 transition-all">Berita</button>
-                <button onclick="filterArticles('Kuliner')" class="cat-btn shrink-0 px-5 py-2 rounded-full border border-slate-200 bg-white text-[10px] font-bold text-slate-500 transition-all">Kuliner</button>
-                <button onclick="filterArticles('Otomotif')" class="cat-btn shrink-0 px-5 py-2 rounded-full border border-slate-200 bg-white text-[10px] font-bold text-slate-500 transition-all">Otomotif</button>
-                <button onclick="filterArticles('Saham')" class="cat-btn shrink-0 px-5 py-2 rounded-full border border-slate-200 bg-white text-[10px] font-bold text-slate-500 transition-all">Saham</button>
-                <button onclick="filterArticles('Crypto')" class="cat-btn shrink-0 px-5 py-2 rounded-full border border-slate-200 bg-white text-[10px] font-bold text-slate-500 transition-all">Crypto</button>
-            </div>
+    <main class="w-full pt-32 pb-10 px-6 max-w-6xl mx-auto flex-grow">
+        <div class="mb-12 text-center md:text-left">
+            <span class="gsap-reveal inline-block px-3 py-1 rounded-full bg-[#eff1f6] border border-white text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4 shadow-sm">
+                Ecosystem v2.0
+            </span>
             
-            <div id="wawasan-list" class="space-y-4 max-w-3xl mx-auto grid-content">
-                </div>
+            <h1 class="gsap-reveal text-4xl md:text-5xl font-extrabold tracking-tight mb-4 leading-normal pb-2 text-gradient-header">
+                Digital Workspace.
+            </h1>
+            
+            <p class="gsap-reveal text-slate-500 text-sm md:text-base max-w-md mx-auto md:mx-0 font-medium">
+                Eksplorasi layanan dan aset digital premium kami dalam satu genggaman.
+            </p>
+        </div>
 
-            <div id="wawasan-detail" class="hidden max-w-2xl mx-auto">
-                <div class="mb-6">
-                    <span id="detail-date" class="text-[10px] font-bold text-blue-500 uppercase tracking-widest"></span>
-                    <h1 id="detail-title" class="text-3xl md:text-4xl font-extrabold text-slate-800 mt-2 leading-tight"></h1>
-                </div>
-                <div id="detail-content" class="prose prose-slate text-slate-600 leading-relaxed space-y-4 text-sm md:text-base"></div>
-                <hr class="my-10 border-slate-200">
-            </div>
-        </section>
-
-        <section id="page-toko" class="page-section">
-            <header class="mb-8 flex items-center justify-between hero-content">
-                <div class="flex items-center gap-3">
-                    <button onclick="navTo('home')" class="gsap-reveal w-9 h-9 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-100 transition"><i class="ri-arrow-left-line"></i></button>
-                    <h2 class="gsap-reveal text-2xl font-bold text-slate-800">Katalog</h2>
-                </div>
-                <a href="https://arsipnusa.github.io/toko-arsip-nusa/" target="_blank" class="gsap-reveal text-xs font-bold text-slate-500 hover:text-slate-900 border-b border-slate-300 pb-0.5">Website Penuh ↗</a>
-            </header>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 grid-content">
-                <div class="gsap-reveal glass-card p-5 rounded-[2rem] group">
-                    <div class="h-48 bg-slate-100 rounded-2xl mb-5 overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-500">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="gsap-reveal glass-card p-6 md:p-8 rounded-[2rem] flex flex-col justify-between h-[280px] md:h-[300px]">
+                <div>
+                    <div class="w-12 h-12 rounded-2xl bg-[#131b2d] text-white flex items-center justify-center text-2xl mb-6 shadow-xl shadow-slate-800/20">
+                        <i class="ri-store-2-line"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-slate-800">Landing Page UMKM</h3>
-                    <div class="flex items-center justify-between mt-4">
-                        <span class="text-base font-bold text-slate-800">Rp 449k</span>
-                        <button class="bg-slate-800 text-white text-[10px] font-bold px-4 py-2 rounded-full hover:bg-slate-700 transition">Detail</button>
-                    </div>
+                    <h2 class="text-xl md:text-2xl font-bold text-brand-text mb-2">Toko Arsip Nusa</h2>
+                    <p class="text-xs md:text-sm text-slate-500 leading-relaxed font-medium">Template website premium & jasa landing page UMKM.</p>
+                </div>
+                <div>
+                    <a href="https://arsipnusa.github.io/toko-arsip-nusa/" target="_blank" class="btn-link text-xs font-bold text-slate-600 uppercase tracking-widest group">
+                        Buka Platform <i class="ri-arrow-right-up-line ml-1 group-hover:text-blue-600 transition-colors"></i>
+                    </a>
                 </div>
             </div>
-        </section>
 
+            <div class="gsap-reveal glass-card p-6 md:p-8 rounded-[2rem] flex flex-col justify-between h-[280px] md:h-[300px]">
+                <div>
+                    <div class="w-12 h-12 rounded-2xl bg-white text-[#131b2d] border border-slate-100 flex items-center justify-center text-2xl mb-6 shadow-xl shadow-slate-400/10">
+                        <i class="ri-shopping-bag-3-line"></i>
+                    </div>
+                    <h2 class="text-xl md:text-2xl font-bold text-brand-text mb-2">Produk Digital</h2>
+                    <p class="text-xs md:text-sm text-slate-500 leading-relaxed font-medium">E-book eksklusif, source code, dan aset desain.</p>
+                </div>
+                <div>
+                    <a href="https://lynk.id/produkarsipnusa" target="_blank" class="btn-link text-xs font-bold text-slate-600 uppercase tracking-widest group">
+                        Lihat Katalog <i class="ri-arrow-right-up-line ml-1 group-hover:text-blue-600 transition-colors"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
     </main>
 
-    <div id="dock-nav" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-300">
-        <div class="bg-white/90 backdrop-blur-xl px-6 py-2.5 rounded-full flex items-center gap-8 shadow-xl shadow-slate-200/50 border border-slate-100">
-            <button onclick="navTo('home')" id="btn-home" class="nav-btn text-xl text-slate-400 hover:text-slate-900 transition hover:-translate-y-0.5"><i class="ri-home-5-line"></i></button>
-            <button onclick="navTo('wawasan')" id="btn-wawasan" class="nav-btn text-xl text-slate-400 hover:text-slate-900 transition hover:-translate-y-0.5"><i class="ri-article-line"></i></button>
-            <button onclick="navTo('toko')" id="btn-toko" class="nav-btn text-xl text-slate-400 hover:text-orange-600 transition hover:-translate-y-0.5"><i class="ri-store-2-line"></i></button>
+    <footer class="w-full max-w-6xl mx-auto px-6 pb-10">
+        <div class="gsap-reveal glass-card rounded-[2.5rem] p-8 md:p-10 relative overflow-hidden">
+            
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
+                <div class="text-center md:text-left">
+                    <div class="flex items-center justify-center md:justify-start gap-2 mb-2">
+                        <div class="w-6 h-6 rounded-md bg-[#131b2d] text-white flex items-center justify-center text-xs">
+                            <i class="ri-archive-fill"></i>
+                        </div>
+                        <h3 class="font-bold text-lg text-brand-text tracking-tight">Arsip Nusa</h3>
+                    </div>
+                    <p class="text-sm text-slate-500 font-medium mt-1">Empowering Digital Growth through Quality Assets.</p>
+                </div>
+
+                <div class="flex gap-3">
+                    <a href="https://github.com/arsipnusa" target="_blank" class="social-btn w-10 h-10 rounded-full border border-slate-200 text-slate-500 flex items-center justify-center transition duration-300">
+                        <i class="ri-github-fill"></i>
+                    </a>
+                    <a href="https://www.instagram.com/arsipnusa/" target="_blank" class="social-btn w-10 h-10 rounded-full border border-slate-200 text-slate-500 flex items-center justify-center transition duration-300">
+                        <i class="ri-instagram-line"></i>
+                    </a>
+                    <a href="https://web.facebook.com/people/Arsip-Nusa/61588075820944/" target="_blank" class="social-btn w-10 h-10 rounded-full border border-slate-200 text-slate-500 flex items-center justify-center transition duration-300">
+                        <i class="ri-facebook-circle-fill"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="w-full h-px bg-gradient-to-r from-transparent via-slate-300/50 to-transparent mb-8"></div>
+
+            <div class="text-center">
+                <p class="text-sm font-medium text-slate-500">
+                    Created by <span class="text-brand-text font-extrabold hover:text-blue-600 transition-colors cursor-pointer">Arsip Nusa</span> & <span class="text-brand-text font-extrabold hover:text-blue-600 transition-colors cursor-pointer">Danny Lukmana</span>
+                </p>
+                <p class="text-[10px] text-slate-400 mt-2 font-medium tracking-wider uppercase">© <span id="year"></span> All Rights Reserved</p>
+            </div>
         </div>
-    </div>
+    </footer>
 
     <script>
-        gsap.registerPlugin(ScrollToPlugin);
-
-        // --- DATABASE ARTIKEL (Nanti di-fetch dari Google Sheets) ---
-        let articlesDatabase = [
-            { id: '1', category: 'Saham', date: '01 Feb 2026', title: 'IHSG Menembus Resistance', summary: 'Analisa teknikal pasar modal hari ini.', content: '<p>Pasar menunjukkan tren positif setelah laporan inflasi rilis...</p>', img: 'https://images.unsplash.com/photo-1611974717483-585807d748b7?w=300' },
-            { id: '2', category: 'Otomotif', date: '30 Jan 2026', title: 'Review Mobil Listrik Terbaru', summary: 'Efisensi baterai yang luar biasa.', content: '<p>Unit terbaru ini mampu menempuh 600km sekali charge...</p>', img: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=300' },
-            { id: '3', category: 'Kuliner', date: '28 Jan 2026', title: 'Hidden Gem di Menteng', summary: 'Kopi enak harga bersahabat.', content: '<p>Terletak di gang sempit namun punya rasa autentik...</p>', img: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=300' },
-            { id: '4', category: 'Berita', date: '25 Jan 2026', title: 'Update Teknologi 2026', summary: 'AI semakin mendominasi frontend dev.', content: '<p>Framework modern kini lebih berfokus pada performa edge...</p>', img: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=300' }
+        const products = [
+            { name: "Toko Arsip Nusa", url: "https://arsipnusa.github.io/toko-arsip-nusa/", icon: "ri-store-2-line" },
+            { name: "Produk Digital", url: "https://lynk.id/produkarsipnusa", icon: "ri-shopping-bag-3-line" }
         ];
 
         window.onload = () => {
             document.body.style.visibility = 'visible';
-            const home = document.getElementById('page-home');
-            home.style.display = 'block';
-            home.classList.add('active-page');
-            document.getElementById('btn-home').classList.add('text-slate-900', 'scale-110');
-            animatePageIn(home);
-            renderWawasanList('Semua'); // Inisialisasi list wawasan
+            gsap.to('.gsap-reveal', { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power4.out" });
+            
+            // Set Year
+            document.getElementById('year').innerText = new Date().getFullYear();
         };
 
-        function renderWawasanList(categoryFilter) {
-            const listContainer = document.getElementById('wawasan-list');
-            listContainer.innerHTML = '';
+        const islandContainer = document.getElementById('islandContainer');
+        const searchInput = document.getElementById('searchInput');
+        const searchDropdown = document.getElementById('searchDropdown');
 
-            const filtered = categoryFilter === 'Semua' 
-                ? articlesDatabase 
-                : articlesDatabase.filter(a => a.category === categoryFilter);
+        function openSearch() {
+            islandContainer.classList.add('is-searching');
+            searchInput.focus();
+        }
 
-            if(filtered.length === 0) {
-                listContainer.innerHTML = `<p class="text-center text-slate-400 py-10 text-xs italic">Belum ada konten di kategori ${categoryFilter}</p>`;
-                return;
-            }
+        function closeSearch() {
+            islandContainer.classList.remove('is-searching');
+            searchInput.value = '';
+            searchInput.blur();
+            searchDropdown.classList.remove('show');
+        }
 
-            filtered.forEach(item => {
-                const card = `
-                    <article onclick="openArticle('${item.id}')" class="gsap-reveal glass-card p-4 rounded-3xl flex gap-4 group cursor-pointer">
-                        <div class="w-20 h-20 bg-slate-200 rounded-2xl overflow-hidden shrink-0">
-                            <img src="${item.img}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-500">
-                        </div>
-                        <div class="flex flex-col justify-center">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="px-2 py-0.5 bg-slate-100 text-[8px] font-bold text-slate-500 rounded uppercase tracking-tighter">${item.category}</span>
-                                <span class="text-[9px] font-bold text-slate-400">${item.date}</span>
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            searchDropdown.innerHTML = '';
+
+            if (query.length > 0) {
+                const filtered = products.filter(p => p.name.toLowerCase().includes(query));
+
+                if (filtered.length > 0) {
+                    filtered.forEach(p => {
+                        const div = document.createElement('div');
+                        div.className = "flex items-center gap-3 px-4 py-3 hover:bg-[#eff1f6] rounded-xl cursor-pointer transition mb-1";
+                        div.innerHTML = `
+                            <div class="w-8 h-8 rounded-lg bg-white border border-slate-100 text-[#131b2d] flex items-center justify-center shrink-0">
+                                <i class="${p.icon}"></i>
                             </div>
-                            <h3 class="text-sm font-bold text-slate-800 mb-0.5 leading-snug group-hover:text-blue-600 transition">${item.title}</h3>
-                            <p class="text-[11px] text-slate-500 line-clamp-1">${item.summary}</p>
-                        </div>
-                    </article>
-                `;
-                listContainer.innerHTML += card;
-            });
-
-            // Animasi ulang kartu saat filter berubah
-            gsap.fromTo("#wawasan-list article", { opacity: 0, y: 15 }, { opacity: 1, y: 0, stagger: 0.1, duration: 0.4 });
-        }
-
-        function filterArticles(cat) {
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if(btn.innerText === cat) btn.classList.add('active');
-            });
-            renderWawasanList(cat);
-        }
-
-        function openArticle(id) {
-            const list = document.getElementById('wawasan-list');
-            const filter = document.getElementById('filter-container');
-            const detail = document.getElementById('wawasan-detail');
-            const data = articlesDatabase.find(a => a.id === id);
-
-            if (!data) return;
-
-            document.getElementById('detail-title').innerText = data.title;
-            document.getElementById('detail-date').innerText = `${data.category} • ${data.date}`;
-            document.getElementById('detail-content').innerHTML = data.content;
-
-            gsap.to([list, filter], { opacity: 0, y: 20, duration: 0.3, onComplete: () => {
-                list.classList.add('hidden');
-                filter.classList.add('hidden');
-                detail.classList.remove('hidden');
-                gsap.fromTo(detail, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5 });
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }});
-        }
-
-        function handleWawasanBack() {
-            const list = document.getElementById('wawasan-list');
-            const filter = document.getElementById('filter-container');
-            const detail = document.getElementById('wawasan-detail');
-
-            if (!detail.classList.contains('hidden')) {
-                gsap.to(detail, { opacity: 0, y: 20, duration: 0.3, onComplete: () => {
-                    detail.classList.add('hidden');
-                    list.classList.remove('hidden');
-                    filter.classList.remove('hidden');
-                    gsap.fromTo([list, filter], { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5 });
-                }});
+                            <span class="text-sm font-bold text-brand-text">${p.name}</span>
+                        `;
+                        div.onclick = () => {
+                            window.open(p.url, '_blank');
+                            closeSearch();
+                        };
+                        searchDropdown.appendChild(div);
+                    });
+                    searchDropdown.classList.add('show');
+                } else {
+                    searchDropdown.innerHTML = `<div class="px-4 py-3 text-xs text-slate-400 text-center">Tidak ditemukan...</div>`;
+                    searchDropdown.classList.add('show');
+                }
             } else {
-                navTo('home');
+                searchDropdown.classList.remove('show');
             }
-        }
+        });
 
-        // --- NAVIGATION & GSAP CORE ---
-        let isAnimating = false;
-        function animatePageIn(section) {
-            const elements = section.querySelectorAll('.gsap-reveal');
-            gsap.set(elements, { y: 30, autoAlpha: 0 });
-            gsap.to(elements, { y: 0, autoAlpha: 1, duration: 0.8, stagger: 0.1, ease: "power3.out" });
-        }
-
-        function navTo(pageId) {
-            if (isAnimating) return;
-            const currentActive = document.querySelector('.page-section.active-page');
-            const target = document.getElementById('page-' + pageId);
-            if (currentActive === target) return;
-            isAnimating = true;
-
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('text-slate-900', 'scale-110'));
-            const activeBtn = document.getElementById('btn-' + pageId);
-            if(activeBtn) activeBtn.classList.add('text-slate-900', 'scale-110');
-
-            gsap.to(window, { scrollTo: 0, duration: 0.5 });
-
-            if (currentActive) {
-                gsap.to(currentActive.querySelectorAll('.gsap-reveal'), {
-                    opacity: 0, y: -20, duration: 0.3, stagger: 0.05, onComplete: () => {
-                        currentActive.style.display = 'none';
-                        currentActive.classList.remove('active-page');
-                        target.style.display = 'block';
-                        target.classList.add('active-page');
-                        animatePageIn(target);
-                        setTimeout(() => { isAnimating = false; }, 800);
-                    }
-                });
+        document.addEventListener('click', (e) => {
+            const nav = document.querySelector('nav');
+            if (!nav.contains(e.target)) {
+                closeSearch();
             }
-        }
+        });
     </script>
 </body>
 </html>
